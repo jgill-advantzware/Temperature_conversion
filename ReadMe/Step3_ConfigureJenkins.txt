@@ -1,0 +1,33 @@
+3. Setting up freestyle job in Jenkins
+3.1 Choose New Item, Freestyle project.
+3.2 Enter a name for the project (ex. MyFirstJob) and choose ok
+3.3 On the project configuration page, under Source Code Management, choose Git. For Repository URL, enter the URL of your GitHub repository.
+3.4 For Build Triggers, select the GitHub hook trigger for GITScm polling
+3.5 Under Build Environment, select the Delete workspace before build starts check box. Each Jenkins project has a dedicated workspace directory. This option allows you to wipe out your workspace directory with each new Jenkins build, to keep it clean.
+3.6 Under Build Actions, add a Build Step, and AWS CodeBuild. On the AWS Configurations, choose Manually specify access and secret keys and provide the keys.
+3.7 From the CloudFormation stack Outputs tab, copy the AWS CodeBuild project name (myProjectName) and paste it in the Project Name field. Also, set the Region that you are using and choose Use Jenkins source.
+3.8 Store AWS credentials for CodeBuild in the native Jenkins credential store
+3.9 To make sure that all files cloned from the GitHub repository are deleted choose Add build step and select File Operation plugin, then click Add and select File Delete. Under File Delete operation in the Include File Pattern, type an asterisk.
+
+3.10 Under Build, configure the following:
+a. Choose Add a Build step.
+b. Choose HTTP Request.
+c. Copy the S3 bucket name from the CloudFormation stack Outputs tab and paste it in below format along with the name of the zip file codebuild-artifact.zip as the value for HTTP Plugin URL.
+Ex: (https://<name of bucket>.s3.amazonaws.com/codebuild-artifact.zip)
+d. For Ignore SSL errors?, choose Yes.
+
+3.11. Under HTTP Request, choose Advanced and leave the default values for Authorization, Headers, and Body. Under Response, for Output response to file, enter the codebuild-artifact.zip file name.
+Add the two build steps for the File Operations plugin, in the following order:
+Unzip action: This build step unzips the codebuild-artifact.zip file and places the contents in the root workspace directory.
+File Delete action: This build step deletes the codebuild-artifact.zip file, leaving only the source bundle contents for deployment.
+
+3.12 On the Post-build Actions, choose Add post-build actions and select the Deploy an application to AWS CodeDeploy check box.
+
+3.13 Enter the following values from the Outputs tab of your CloudFormation stack and leave the other settings at their default (blank):
+For AWS CodeDeploy Application Name, enter the value of CodeDeployApplicationName.
+For AWS CodeDeploy Deployment Group, enter the value of CodeDeployDeploymentGroup.
+For AWS CodeDeploy Deployment Config, enter CodeDeployDefault.OneAtATime.
+For AWS Region, choose the Region where you created the CodeDeploy environment.
+For S3 Bucket, enter the value of S3BucketName.
+
+3.14 Select the Wait for deployment to finish? check box. This option allows you to view the CodeDeploy deployments logs and events on your Jenkins server console output

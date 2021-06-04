@@ -1,0 +1,21 @@
+1. Use the CloudFormation.json template to setup the stack in AWS
+Step 1: Go to AWS CloudFormation service and load the template
+Step 2: Provide the inputs from the drop down and create the stack.
+CodeBuildProject	myproject	
+CodedeployInstanceType	t2.micro	
+InstanceCount	2	
+JenkinsInstanceType	t2.micro	
+KeyName	main-key	(name of key created in previous step)
+PublicSubnet1	subnet-05f521b15677835ed	(could be anyother name which you created in previous step)
+PublicSubnet2	subnet-0f0d79cdbd9208bb0	(could be any other name which you created in previous step)
+VpcId	vpc-09f391d8fec412dbe	(could be any other name which you created in previous step)
+YourIPRange	0.0.0.0/0 (should be entered as is)
+
+2. Once the stack is up and ready, use the Jenkins public IP to open the Jenkins page.
+2.1 Once the page is accessible, we will unlock it by providing the initialadmin password from the server. Login to the server using the private key you created and downloaded in Step 2.
+
+3. Configuring plugins in Jenkins. Go to plugin manager and install below plugins
+AWS CodeDeploy
+AWS CodeBuild
+Http Request
+File Operations
